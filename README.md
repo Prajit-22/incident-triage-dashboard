@@ -11,7 +11,7 @@ A React + TypeScript dashboard for the [Incident Triage API](https://github.com/
 
 ## Run
 
-Prerequisites: Node 20+, and the API running (Java 11+, Maven).
+Prerequisites: Node 22+, and the API running (Java 11+, Maven).
 
 ```sh
 # 1. Start the backend (listens on :8080)
@@ -41,7 +41,7 @@ npm run lint
 npm run build
 ```
 
-Ten tests cover the API client (query building, PATCH body, 400 field errors, 409 message), the transition rule, and the app against a mocked `fetch`: summary figures, locked resolved rows, filtering, blocked empty submit and the unreachable-API banner. CI runs lint, tests and build on Node 20 and 22. I also ran the app against the real backend by hand: create an incident, move it to `INVESTIGATING`, filter by status.
+Ten tests cover the API client (query building, PATCH body, 400 field errors, 409 message), the transition rule, and the app against a mocked `fetch`: summary figures, locked resolved rows, filtering, blocked empty submit and the unreachable-API banner. CI runs lint, tests and build on Node 22 and 24. I also ran the app against the real backend by hand: create an incident, move it to `INVESTIGATING`, filter by status.
 
 ## Structure
 
