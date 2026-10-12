@@ -1,0 +1,30 @@
+:root { font-family: system-ui, sans-serif; color: #1c2430; background: #f4f6f9; }
+body { margin: 0; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+header h1 { margin: 0; } header p { margin: 4px 0 20px; color: #5b6676; }
+h3 { margin: 0 0 10px; }
+.card { background: #fff; border: 1px solid #e1e6ed; border-radius: 10px; padding: 16px; }
+.stat-cards, .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.card-value { font-size: 32px; font-weight: 700; } .card-label { color: #5b6676; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 32px; gap: 8px; align-items: center; margin: 6px 0; font-size: 14px; }
+.bar-track { background: #edf0f4; height: 10px; border-radius: 5px; overflow: hidden; }
+.bar-fill { height: 100%; } .bar-value { text-align: right; font-variant-numeric: tabular-nums; }
+.sev-LOW { background: #6bb36b; color: #fff } .sev-MEDIUM { background: #e0b43a; color: #1c2430 }
+.sev-HIGH { background: #e2792f; color: #fff } .sev-CRITICAL { background: #c8323c; color: #fff }
+.status-OPEN { background: #4a7bd0; color: #fff } .status-INVESTIGATING { background: #8a5fc7; color: #fff } .status-RESOLVED { background: #5c6b7a; color: #fff }
+.layout { display: grid; grid-template-columns: 320px 1fr; gap: 16px; align-items: start; margin-top: 12px; }
+@media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
+.form label { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; font-size: 14px; }
+input, textarea, select { font: inherit; padding: 6px 8px; border: 1px solid #c8d0db; border-radius: 6px; }
+button { font: inherit; padding: 7px 14px; border: 0; border-radius: 6px; background: #2457c5; color: #fff; cursor: pointer; }
+button:disabled { background: #a9b4c6; cursor: default; }
+.field-error { color: #b3232d; font-size: 13px; } .banner { background: #fde8ea; color: #b3232d; padding: 10px 14px; border-radius: 8px; }
+.toolbar { display: flex; gap: 16px; align-items: center; } .toolbar h3 { margin: 0; margin-right: auto; }
+.toolbar label { font-size: 14px; display: flex; gap: 6px; align-items: center; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 10px; overflow: hidden; }
+th, td { text-align: left; padding: 10px; border-bottom: 1px solid #edf0f4; vertical-align: top; font-size: 14px; }
+.desc { color: #5b6676; font-size: 13px; margin-top: 2px; }
+.badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+.locked { color: #8a95a5; font-size: 13px; }
+.pager { display: flex; gap: 12px; align-items: center; justify-content: center; margin-top: 12px; }
+.empty { padding: 24px; text-align: center; color: #5b6676; }
