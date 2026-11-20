@@ -1,13 +1,24 @@
 import { useState } from 'react'
 import { ApiError, updateStatus } from '../api'
-import { SEVERITIES, STATUSES, allowedTransitions } from '../types'
+import { SEVERITIES, STATUSES, allowedTransitions, isOverdue } from '../types'
 import type { Incident, Page, Severity, Status } from '../types'
+
+interface FilterValues {
+  status: Status | ''
+  severity: Severity | ''
+  dueAfter: string
+  dueBefore: string
+  overdueOnly: boolean
+}
 
 interface Props {
   page: Page<Incident>
   status: Status | ''
   severity: Severity | ''
-  onFilter: (f: { status: Status | ''; severity: Severity | '' }) => void
+  dueAfter?: string
+  dueBefore?: string
+  overdueOnly?: boolean
+  onFilter: (f: FilterValues) => void
   onPage: (p: number) => void
   onChanged: () => void
 }
@@ -39,24 +50,37 @@ function StatusControl({ incident, onChanged }: { incident: Incident; onChanged:
   )
 }
 
-export function IncidentList({ page, status, severity, onFilter, onPage, onChanged }: Props) {
+export function IncidentList({ page, status, severity, dueAfter = '', dueBefore = '', overdueOnly = false, onFilter, onPage, onChanged }: Props) {
+  const current: FilterValues = { status, severity, dueAfter, dueBefore, overdueOnly }
   return (
     <section aria-label="Incidents">
       <div className="toolbar">
         <h3>Incidents</h3>
         <label>
           Status
-          <select value={status} onChange={(e) => onFilter({ status: e.target.value as Status | '', severity })}>
+          <select value={status} onChange={(e) => onFilter({ ...current, status: e.target.value as Status | '' })}>
             <option value="">All</option>
             {STATUSES.map((s) => <option key={s}>{s}</option>)}
           </select>
         </label>
         <label>
           Severity
-          <select value={severity} onChange={(e) => onFilter({ status, severity: e.target.value as Severity | '' })}>
+          <select value={severity} onChange={(e) => onFilter({ ...current, severity: e.target.value as Severity | '' })}>
             <option value="">All</option>
             {SEVERITIES.map((s) => <option key={s}>{s}</option>)}
           </select>
+        </label>
+        <label>
+          Due after
+          <input type="date" value={dueAfter} onChange={(e) => onFilter({ ...current, dueAfter: e.target.value })} />
+        </label>
+        <label>
+          Due before
+          <input type="date" value={dueBefore} onChange={(e) => onFilter({ ...current, dueBefore: e.target.value })} />
+        </label>
+        <label className="check">
+          <input type="checkbox" checked={overdueOnly} onChange={(e) => onFilter({ ...current, overdueOnly: e.target.checked })} />
+          Overdue only
         </label>
       </div>
 
@@ -65,7 +89,7 @@ export function IncidentList({ page, status, severity, onFilter, onPage, onChang
       ) : (
         <table>
           <thead>
-            <tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Reported</th><th>Action</th></tr>
+            <tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Reported</th><th>Due</th><th>Action</th></tr>
           </thead>
           <tbody>
             {page.content.map((i) => (
@@ -78,6 +102,14 @@ export function IncidentList({ page, status, severity, onFilter, onPage, onChang
                 <td><span className={`badge sev-${i.severity}`}>{i.severity}</span></td>
                 <td><span className={`badge status-${i.status}`}>{i.status}</span></td>
                 <td>{new Date(i.createdAt).toLocaleString()}</td>
+                <td>
+                  {i.dueAt ? (
+                    <>
+                      {new Date(i.dueAt).toLocaleDateString()}
+                      {isOverdue(i) && <span className="badge overdue">Overdue</span>}
+                    </>
+                  ) : '—'}
+                </td>
                 <td><StatusControl incident={i} onChanged={onChanged} /></td>
               </tr>
             ))}
