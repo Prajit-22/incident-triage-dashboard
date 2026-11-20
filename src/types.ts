@@ -11,6 +11,8 @@ export interface Incident {
   severity: Severity
   status: Status
   createdAt: string
+  resolvedAt: string | null
+  dueAt: string | null
 }
 
 export interface Page<T> {
@@ -27,17 +29,23 @@ export interface Summary {
   total: number
   byStatus: Record<Status, number>
   bySeverity: Record<Severity, number>
+  averageResolutionSeconds: number | null
+  overdueOpen: number
 }
 
 export interface NewIncident {
   title: string
   description: string
   severity: Severity
+  dueAt?: string | null
 }
 
 export interface ListFilters {
   status?: Status
   severity?: Severity
+  dueAfter?: string
+  dueBefore?: string
+  overdue?: boolean
   page: number
   size: number
 }
@@ -45,4 +53,17 @@ export interface ListFilters {
 /** Rule enforced by the backend: a RESOLVED incident cannot be reopened (409). */
 export function allowedTransitions(current: Status): Status[] {
   return current === 'RESOLVED' ? [] : STATUSES.filter((s) => s !== current)
+}
+
+/** Mirrors the backend: overdue means past its deadline and not resolved; no deadline is never overdue. */
+export function isOverdue(i: Pick<Incident, 'dueAt' | 'status'>, now: Date = new Date()): boolean {
+  return i.dueAt !== null && i.status !== 'RESOLVED' && new Date(i.dueAt).getTime() < now.getTime()
+}
+
+/** Inclusive ISO bounds of a whole UTC day, for turning a date input value into a window bound. */
+export function dayStartIso(day: string): string {
+  return `${day}T00:00:00Z`
+}
+export function dayEndIso(day: string): string {
+  return `${day}T23:59:59.999Z`
 }
