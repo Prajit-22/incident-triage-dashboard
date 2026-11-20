@@ -60,10 +60,10 @@ export function isOverdue(i: Pick<Incident, 'dueAt' | 'status'>, now: Date = new
   return i.dueAt !== null && i.status !== 'RESOLVED' && new Date(i.dueAt).getTime() < now.getTime()
 }
 
-/** Inclusive ISO bounds of a whole UTC day, for turning a date input value into a window bound. */
+/** Inclusive ISO bounds of a whole day in the viewer's local time zone, for a date input value. */
 export function dayStartIso(day: string): string {
-  return `${day}T00:00:00Z`
+  return new Date(`${day}T00:00:00`).toISOString()
 }
 export function dayEndIso(day: string): string {
-  return `${day}T23:59:59.999Z`
+  return new Date(`${day}T23:59:59.999`).toISOString()
 }
