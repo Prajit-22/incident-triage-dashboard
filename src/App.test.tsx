@@ -56,8 +56,9 @@ describe('App', () => {
     await userEvent.type(within(toolbar).getByLabelText('Due before'), '2026-11-30')
     await vi.waitFor(() => {
       const urls = spy.mock.calls.map(([u]) => decodeURIComponent(String(u)))
-      expect(urls.some((u) => u.includes('due_after=2026-11-01T00:00:00Z'))).toBe(true)
-      expect(urls.some((u) => u.includes('due_before=2026-11-30T23:59:59.999Z'))).toBe(true)
+      // Local-day bounds, expressed as ISO instants (the API's windows are inclusive).
+      expect(urls.some((u) => u.includes(`due_after=${new Date(2026, 10, 1, 0, 0, 0, 0).toISOString()}`))).toBe(true)
+      expect(urls.some((u) => u.includes(`due_before=${new Date(2026, 10, 30, 23, 59, 59, 999).toISOString()}`))).toBe(true)
     })
   })
 
@@ -104,7 +105,7 @@ describe('App', () => {
     await vi.waitFor(() => {
       const post = spy.mock.calls.find(([, i]) => i?.method === 'POST')
       expect(post).toBeTruthy()
-      expect(JSON.parse(String(post![1]?.body)).dueAt).toBe('2026-12-01T23:59:59.999Z')
+      expect(JSON.parse(String(post![1]?.body)).dueAt).toBe(new Date(2026, 11, 1, 23, 59, 59, 999).toISOString())
     })
   })
 
