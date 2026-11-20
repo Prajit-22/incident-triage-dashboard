@@ -6,7 +6,7 @@ A React + TypeScript dashboard for the [Incident Triage API](https://github.com/
 
 - **Triage summary**: total, unresolved, high + critical, and overdue-open counts, plus bars by status and by severity, all from `GET /api/incidents/summary`.
 - **Incident list**: filter by status, severity, a due-date window, or overdue-only, 10 per page, newest first (`GET /api/incidents?status=&severity=&due_after=&due_before=&overdue=&page=&size=`).
-- **Due dates**: the form takes an optional deadline (a picked day means end of that day, UTC); the list shows each incident's due date and marks open incidents past it as overdue. A resolved incident is never overdue, matching the backend's rule.
+- **Due dates**: the form takes an optional deadline (a picked day means the end of that day in the viewer's local time zone); the list shows each incident's due date and marks open incidents past it as overdue. A resolved incident is never overdue, matching the backend's rule.
 - **Report an incident**: form with a title length counter and an optional due date. Client-side checks catch blank fields, and the backend's per-field validation errors (`{"error", "fields"}`) are shown next to the right input.
 - **Status changes**: move an incident between `OPEN`, `INVESTIGATING` and `RESOLVED` (`PATCH /api/incidents/{id}/status`). The UI mirrors the backend rule that a resolved incident cannot be reopened: the control is locked, and a `409` from a stale view is shown and the list refetched.
 
