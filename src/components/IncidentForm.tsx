@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { ApiError, createIncident } from '../api'
-import { SEVERITIES } from '../types'
+import { SEVERITIES, dayEndIso } from '../types'
 import type { Incident, Severity } from '../types'
 
 const TITLE_MAX = 120
@@ -10,6 +10,7 @@ export function IncidentForm({ onCreated }: { onCreated: (i: Incident) => void }
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [severity, setSeverity] = useState<Severity>('MEDIUM')
+  const [due, setDue] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -26,10 +27,17 @@ export function IncidentForm({ onCreated }: { onCreated: (i: Incident) => void }
 
     setBusy(true)
     try {
-      const created = await createIncident({ title: title.trim(), description: description.trim(), severity })
+      const created = await createIncident({
+        title: title.trim(),
+        description: description.trim(),
+        severity,
+        // The backend accepts a null deadline; a chosen day means end of that day (UTC).
+        dueAt: due ? dayEndIso(due) : null,
+      })
       setTitle('')
       setDescription('')
       setSeverity('MEDIUM')
+      setDue('')
       onCreated(created)
     } catch (err) {
       if (err instanceof ApiError) {
@@ -62,6 +70,10 @@ export function IncidentForm({ onCreated }: { onCreated: (i: Incident) => void }
           {SEVERITIES.map((s) => <option key={s}>{s}</option>)}
         </select>
         {fieldErrors.severity && <span role="alert" className="field-error">{fieldErrors.severity}</span>}
+      </label>
+      <label>
+        Due date (optional)
+        <input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
       </label>
       {error && <p role="alert" className="field-error">{error}</p>}
       <button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Create incident'}</button>
