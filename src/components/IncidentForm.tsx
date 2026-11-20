@@ -74,6 +74,7 @@ export function IncidentForm({ onCreated }: { onCreated: (i: Incident) => void }
       <label>
         Due date (optional)
         <input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
+        <small>due at the end of that day, your local time</small>
       </label>
       {error && <p role="alert" className="field-error">{error}</p>}
       <button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Create incident'}</button>
