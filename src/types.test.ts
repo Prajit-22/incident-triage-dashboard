@@ -25,8 +25,9 @@ describe('isOverdue', () => {
 })
 
 describe('day bounds', () => {
-  it('turns a date input value into inclusive UTC bounds', () => {
-    expect(dayStartIso('2026-12-01')).toBe('2026-12-01T00:00:00Z')
-    expect(dayEndIso('2026-12-01')).toBe('2026-12-01T23:59:59.999Z')
+  it('turns a date input value into inclusive bounds of the local day', () => {
+    // Constructed with local-time arguments so the expectation holds in any time zone.
+    expect(dayStartIso('2026-12-01')).toBe(new Date(2026, 11, 1, 0, 0, 0, 0).toISOString())
+    expect(dayEndIso('2026-12-01')).toBe(new Date(2026, 11, 1, 23, 59, 59, 999).toISOString())
   })
 })
