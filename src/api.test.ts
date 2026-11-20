@@ -11,6 +11,21 @@ describe('api client', () => {
     expect(spy.mock.calls[0][0]).toBe('/api/incidents?page=2&size=10&status=OPEN')
   })
 
+  it('builds due-window and overdue params, decoded back to the sent values', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(200, { content: [] }))
+    await listIncidents({
+      dueAfter: '2026-11-01T00:00:00Z',
+      dueBefore: '2026-11-30T23:59:59.999Z',
+      overdue: true,
+      page: 0,
+      size: 10,
+    })
+    const params = new URLSearchParams(String(spy.mock.calls[0][0]).split('?')[1])
+    expect(params.get('due_after')).toBe('2026-11-01T00:00:00Z')
+    expect(params.get('due_before')).toBe('2026-11-30T23:59:59.999Z')
+    expect(params.get('overdue')).toBe('true')
+  })
+
   it('PATCHes /status with the new status', async () => {
     const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(200, {}))
     await updateStatus(7, 'RESOLVED')
