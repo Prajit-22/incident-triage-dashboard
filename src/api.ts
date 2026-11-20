@@ -33,6 +33,9 @@ export function listIncidents(f: ListFilters): Promise<Page<Incident>> {
   const q = new URLSearchParams({ page: String(f.page), size: String(f.size) })
   if (f.status) q.set('status', f.status)
   if (f.severity) q.set('severity', f.severity)
+  if (f.dueAfter) q.set('due_after', f.dueAfter)
+  if (f.dueBefore) q.set('due_before', f.dueBefore)
+  if (f.overdue) q.set('overdue', 'true')
   return request(`${BASE}?${q}`)
 }
 
