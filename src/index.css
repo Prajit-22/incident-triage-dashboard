@@ -19,8 +19,8 @@ input, textarea, select { font: inherit; padding: 6px 8px; border: 1px solid #c8
 button { font: inherit; padding: 7px 14px; border: 0; border-radius: 6px; background: #2457c5; color: #fff; cursor: pointer; }
 button:disabled { background: #a9b4c6; cursor: default; }
 .field-error { color: #b3232d; font-size: 13px; } .banner { background: #fde8ea; color: #b3232d; padding: 10px 14px; border-radius: 8px; }
-.toolbar { display: flex; gap: 16px; align-items: center; } .toolbar h3 { margin: 0; margin-right: auto; }
-.toolbar label { font-size: 14px; display: flex; gap: 6px; align-items: center; }
+.toolbar { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; } .toolbar h3 { margin: 0; margin-right: auto; }
+.toolbar label { font-size: 14px; display: flex; gap: 6px; align-items: center; white-space: nowrap; }
 table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 10px; overflow: hidden; }
 th, td { text-align: left; padding: 10px; border-bottom: 1px solid #edf0f4; vertical-align: top; font-size: 14px; }
 .desc { color: #5b6676; font-size: 13px; margin-top: 2px; }
