@@ -25,6 +25,8 @@ table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #f
 th, td { text-align: left; padding: 10px; border-bottom: 1px solid #edf0f4; vertical-align: top; font-size: 14px; }
 .desc { color: #5b6676; font-size: 13px; margin-top: 2px; }
 .badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+.badge.overdue { background: #fde8ea; color: #b3232d; margin-left: 6px; }
+.toolbar .check { display: flex; align-items: center; gap: 6px; }
 .locked { color: #8a95a5; font-size: 13px; }
 .pager { display: flex; gap: 12px; align-items: center; justify-content: center; margin-top: 12px; }
 .empty { padding: 24px; text-align: center; color: #5b6676; }
