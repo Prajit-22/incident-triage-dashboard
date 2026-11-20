@@ -3,6 +3,7 @@ import { getSummary, listIncidents } from './api'
 import { IncidentForm } from './components/IncidentForm'
 import { IncidentList } from './components/IncidentList'
 import { Summary } from './components/Summary'
+import { dayEndIso, dayStartIso } from './types'
 import type { Incident, Page, Severity, Status, Summary as SummaryData } from './types'
 
 const PAGE_SIZE = 10
@@ -12,6 +13,9 @@ export default function App() {
   const [page, setPage] = useState<Page<Incident> | null>(null)
   const [status, setStatus] = useState<Status | ''>('')
   const [severity, setSeverity] = useState<Severity | ''>('')
+  const [dueAfter, setDueAfter] = useState('')
+  const [dueBefore, setDueBefore] = useState('')
+  const [overdueOnly, setOverdueOnly] = useState(false)
   const [pageNo, setPageNo] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [tick, setTick] = useState(0)
@@ -22,7 +26,16 @@ export default function App() {
     let cancelled = false
     Promise.all([
       getSummary(),
-      listIncidents({ status: status || undefined, severity: severity || undefined, page: pageNo, size: PAGE_SIZE }),
+      listIncidents({
+        status: status || undefined,
+        severity: severity || undefined,
+        // A picked day bounds the whole UTC day, matching the API's inclusive windows.
+        dueAfter: dueAfter ? dayStartIso(dueAfter) : undefined,
+        dueBefore: dueBefore ? dayEndIso(dueBefore) : undefined,
+        overdue: overdueOnly || undefined,
+        page: pageNo,
+        size: PAGE_SIZE,
+      }),
     ])
       .then(([s, p]) => {
         if (cancelled) return
@@ -36,7 +49,7 @@ export default function App() {
     return () => {
       cancelled = true
     }
-  }, [status, severity, pageNo, tick])
+  }, [status, severity, dueAfter, dueBefore, overdueOnly, pageNo, tick])
 
   return (
     <main>
@@ -53,7 +66,17 @@ export default function App() {
             page={page}
             status={status}
             severity={severity}
-            onFilter={(f) => { setStatus(f.status); setSeverity(f.severity); setPageNo(0) }}
+            dueAfter={dueAfter}
+            dueBefore={dueBefore}
+            overdueOnly={overdueOnly}
+            onFilter={(f) => {
+              setStatus(f.status)
+              setSeverity(f.severity)
+              setDueAfter(f.dueAfter)
+              setDueBefore(f.dueBefore)
+              setOverdueOnly(f.overdueOnly)
+              setPageNo(0)
+            }}
             onPage={setPageNo}
             onChanged={refresh}
           />
