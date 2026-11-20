@@ -32,6 +32,10 @@ export function Summary({ data }: { data: SummaryData }) {
           <div className="card-value" data-testid="urgent">{urgent}</div>
           <div className="card-label">High + critical</div>
         </div>
+        <div className="card">
+          <div className="card-value" data-testid="overdue">{data.overdueOpen}</div>
+          <div className="card-label">Overdue open</div>
+        </div>
       </div>
       <div className="charts">
         <div className="card">
