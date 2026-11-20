@@ -87,6 +87,7 @@ export function IncidentList({ page, status, severity, dueAfter = '', dueBefore 
       {page.content.length === 0 ? (
         <p className="empty">No incidents match these filters.</p>
       ) : (
+        <div className="table-scroll">
         <table>
           <thead>
             <tr><th>ID</th><th>Title</th><th>Severity</th><th>Status</th><th>Reported</th><th>Due</th><th>Action</th></tr>
@@ -115,6 +116,7 @@ export function IncidentList({ page, status, severity, dueAfter = '', dueBefore 
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       <div className="pager">
