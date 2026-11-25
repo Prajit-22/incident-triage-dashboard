@@ -13,6 +13,7 @@ export default function App() {
   const [page, setPage] = useState<Page<Incident> | null>(null)
   const [status, setStatus] = useState<Status | ''>('')
   const [severity, setSeverity] = useState<Severity | ''>('')
+  const [query, setQuery] = useState('')
   const [dueAfter, setDueAfter] = useState('')
   const [dueBefore, setDueBefore] = useState('')
   const [overdueOnly, setOverdueOnly] = useState(false)
@@ -29,6 +30,8 @@ export default function App() {
       listIncidents({
         status: status || undefined,
         severity: severity || undefined,
+        // The API matches q case-insensitively over title and description.
+        q: query.trim() || undefined,
         // A picked day bounds the whole UTC day, matching the API's inclusive windows.
         dueAfter: dueAfter ? dayStartIso(dueAfter) : undefined,
         dueBefore: dueBefore ? dayEndIso(dueBefore) : undefined,
@@ -49,7 +52,7 @@ export default function App() {
     return () => {
       cancelled = true
     }
-  }, [status, severity, dueAfter, dueBefore, overdueOnly, pageNo, tick])
+  }, [status, severity, query, dueAfter, dueBefore, overdueOnly, pageNo, tick])
 
   return (
     <main>
@@ -66,12 +69,14 @@ export default function App() {
             page={page}
             status={status}
             severity={severity}
+            query={query}
             dueAfter={dueAfter}
             dueBefore={dueBefore}
             overdueOnly={overdueOnly}
             onFilter={(f) => {
               setStatus(f.status)
               setSeverity(f.severity)
+              setQuery(f.query)
               setDueAfter(f.dueAfter)
               setDueBefore(f.dueBefore)
               setOverdueOnly(f.overdueOnly)
