@@ -43,6 +43,7 @@ export interface NewIncident {
 export interface ListFilters {
   status?: Status
   severity?: Severity
+  q?: string
   dueAfter?: string
   dueBefore?: string
   overdue?: boolean
