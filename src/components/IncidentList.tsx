@@ -6,6 +6,7 @@ import type { Incident, Page, Severity, Status } from '../types'
 interface FilterValues {
   status: Status | ''
   severity: Severity | ''
+  query: string
   dueAfter: string
   dueBefore: string
   overdueOnly: boolean
@@ -15,6 +16,7 @@ interface Props {
   page: Page<Incident>
   status: Status | ''
   severity: Severity | ''
+  query?: string
   dueAfter?: string
   dueBefore?: string
   overdueOnly?: boolean
@@ -50,12 +52,21 @@ function StatusControl({ incident, onChanged }: { incident: Incident; onChanged:
   )
 }
 
-export function IncidentList({ page, status, severity, dueAfter = '', dueBefore = '', overdueOnly = false, onFilter, onPage, onChanged }: Props) {
-  const current: FilterValues = { status, severity, dueAfter, dueBefore, overdueOnly }
+export function IncidentList({ page, status, severity, query = '', dueAfter = '', dueBefore = '', overdueOnly = false, onFilter, onPage, onChanged }: Props) {
+  const current: FilterValues = { status, severity, query, dueAfter, dueBefore, overdueOnly }
   return (
     <section aria-label="Incidents">
       <div className="toolbar">
         <h3>Incidents</h3>
+        <label>
+          Search
+          <input
+            type="search"
+            value={query}
+            placeholder="Title or description"
+            onChange={(e) => onFilter({ ...current, query: e.target.value })}
+          />
+        </label>
         <label>
           Status
           <select value={status} onChange={(e) => onFilter({ ...current, status: e.target.value as Status | '' })}>
