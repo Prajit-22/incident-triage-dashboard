@@ -26,6 +26,15 @@ describe('api client', () => {
     expect(params.get('overdue')).toBe('true')
   })
 
+  it('passes the search text through as q, and omits it when blank', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => json(200, { content: [] }))
+    await listIncidents({ q: 'db leak', page: 0, size: 10 })
+    const params = new URLSearchParams(String(spy.mock.calls[0][0]).split('?')[1])
+    expect(params.get('q')).toBe('db leak')
+    await listIncidents({ page: 0, size: 10 })
+    expect(String(spy.mock.calls[1][0])).not.toContain('q=')
+  })
+
   it('PATCHes /status with the new status', async () => {
     const spy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(200, {}))
     await updateStatus(7, 'RESOLVED')
