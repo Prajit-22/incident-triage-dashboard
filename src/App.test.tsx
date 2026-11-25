@@ -62,6 +62,41 @@ describe('App', () => {
     })
   })
 
+  it('re-queries with the search text as q, combined with other filters', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) =>
+      String(url).includes('/summary') ? ok(summary) : ok(page([incident(1, 'OPEN')])),
+    )
+    render(<App />)
+    await screen.findByText('Incident 1')
+    const toolbar = screen.getByRole('region', { name: 'Incidents' })
+    await userEvent.selectOptions(within(toolbar).getByLabelText('Status'), 'OPEN')
+    await userEvent.type(within(toolbar).getByLabelText('Search'), 'phish')
+    await vi.waitFor(() => {
+      const urls = spy.mock.calls.map(([u]) => decodeURIComponent(String(u)))
+      expect(urls.some((u) => u.includes('q=phish') && u.includes('status=OPEN'))).toBe(true)
+    })
+  })
+
+  it('drops the q param when the search box is cleared', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) =>
+      String(url).includes('/summary') ? ok(summary) : ok(page([incident(1, 'OPEN')])),
+    )
+    render(<App />)
+    await screen.findByText('Incident 1')
+    const toolbar = screen.getByRole('region', { name: 'Incidents' })
+    const search = within(toolbar).getByLabelText('Search')
+    await userEvent.type(search, 'x')
+    await vi.waitFor(() =>
+      expect(spy.mock.calls.some(([u]) => String(u).includes('q=x'))).toBe(true),
+    )
+    await userEvent.clear(search)
+    await vi.waitFor(() => {
+      const last = String(spy.mock.calls.at(-1)![0])
+      expect(last).not.toContain('q=')
+      expect(last).toContain('/api/incidents?')
+    })
+  })
+
   it('sends overdue=true when the overdue-only box is checked', async () => {
     const spy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) =>
       String(url).includes('/summary') ? ok(summary) : ok(page([incident(1, 'OPEN')])),
